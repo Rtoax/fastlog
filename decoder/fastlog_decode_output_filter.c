@@ -19,7 +19,7 @@ static bool match_func_ok(struct output_filter *filter, struct logdata_decode *l
             return false;
         }
     }
-    
+
     return true;
 }
 
@@ -54,12 +54,12 @@ struct output_filter filter_func = {
     .filter_type = LOG__FILTER_MATCH_STRSTR,
     .match_prefix_ok = match_func_ok,
 };
-    
+
 struct output_filter filter_thread = {
     .log_range = LOG__RANGE_THREAD,
     .filter_type = LOG__FILTER_MATCH_STRSTR,
     .match_prefix_ok = match_thread_ok,
-};  
+};
 struct output_filter filter_content = {
     .log_range = LOG__RANGE_CONTENT,
     .filter_type = LOG__FILTER_MATCH_STRSTR,

@@ -13,12 +13,12 @@ static fastlog_atomic64_t logdata_count;   /* 日志数据统计 */
  *
  *  metadata_rbtree__cmp: metadata_decode 结构对比
  *
- *  metadata_rbtree__init:  红黑树初始化 
+ *  metadata_rbtree__init:  红黑树初始化
  *  metadata_rbtree__destroy:   红黑树销毁
  *  metadata_rbtree__insert:  红黑树插入
  *  metadata_rbtree__remove:  红黑树删除
  *  metadata_rbtree__search:   红黑树查找
- *  metadata_rbtree__iter:  红黑树遍历 
+ *  metadata_rbtree__iter:  红黑树遍历
  */
 typedef rb_tree(struct metadata_decode) metadata_rbtree_t;
 
@@ -54,7 +54,7 @@ void metadata_rbtree__init()
 void metadata_rbtree__destroy(void (*cb)(struct metadata_decode *node, void *arg), void *arg)
 {
     assert(cb && "NULL callback error.");
-    
+
     metadata_rbtree_destroy(&metadata_rbtree, cb, arg);
 }
 
@@ -78,11 +78,11 @@ struct metadata_decode * metadata_rbtree__search(int meta_log_id)
 void metadata_rbtree__iter_level(enum FASTLOG_LEVEL level, void (*cb)(struct metadata_decode *meta, void *arg), void *arg)
 {
     assert(cb && "NULL callback error.");
-    
+
     struct metadata_decode *_next = NULL;
 
-    for(_next = metadata_rbtree_first(&metadata_rbtree); 
-        _next; 
+    for(_next = metadata_rbtree_first(&metadata_rbtree);
+        _next;
         _next = metadata_rbtree_next(&metadata_rbtree, _next)) {
         //所有级别
         if(FASTLOGLEVEL_ALL == level) {
@@ -115,12 +115,12 @@ rb_gen(static _unused, metadata_rbtree_, metadata_rbtree_t, struct metadata_deco
  *
  *  logdata_rbtree__cmp: logdata_decode 结构比较
  *
- *  logdata_rbtree__init:  红黑树初始化 
+ *  logdata_rbtree__init:  红黑树初始化
  *  logdata_rbtree__destroy:   红黑树销毁
  *  logdata_rbtree__insert:  红黑树插入
  *  logdata_rbtree__remove:  红黑树删除
  *  logdata_rbtree__search:   红黑树查找
- *  logdata_rbtree__iter:  红黑树遍历 
+ *  logdata_rbtree__iter:  红黑树遍历
  */
 
 typedef rb_tree(struct logdata_decode) logdata_rbtree_t;
@@ -162,7 +162,7 @@ void logdata_rbtree__init()
 void logdata_rbtree__destroy(void (*cb)(struct logdata_decode *node, void *arg), void *arg)
 {
     assert(cb && "NULL callback error.");
-    
+
     logdata_rbtree_destroy(&logdata_rbtree, cb, arg);
 }
 
@@ -183,9 +183,9 @@ struct logdata_decode * logdata_rbtree__search(int log_id, uint64_t log_rdtsc)
     fastlog_logdata_t log;
     log.log_id = log_id;
     log.log_rdtsc = log_rdtsc;
-    
+
     struct logdata_decode logdata = {.logdata = &log};
-    
+
     return logdata_rbtree_search(&logdata_rbtree, (const struct logdata_decode*)&logdata);
 }
 
@@ -193,11 +193,11 @@ struct logdata_decode * logdata_rbtree__search(int log_id, uint64_t log_rdtsc)
 void logdata_rbtree__iter(void (*cb)(struct logdata_decode *meta, void *arg), void *arg)
 {
     assert(cb && "NULL callback error.");
-    
+
     struct logdata_decode *_next = NULL;
 
-    for(_next = logdata_rbtree_first(&logdata_rbtree); 
-        _next; 
+    for(_next = logdata_rbtree_first(&logdata_rbtree);
+        _next;
         _next = logdata_rbtree_next(&logdata_rbtree, _next)) {
         cb(_next, arg);
     }
@@ -216,12 +216,12 @@ rb_gen(static _unused, logdata_rbtree_, logdata_rbtree_t, struct logdata_decode,
  *
  *  log_search_rbtree__cmp: metadata_decode 结构对比
  *
- *  log_search_rbtree__init:  红黑树初始化 
+ *  log_search_rbtree__init:  红黑树初始化
  *  log_search_rbtree__destroy:   红黑树销毁
  *  log_search_rbtree__insert:  红黑树插入
  *  log_search_rbtree__remove:  红黑树删除
  *  log_search_rbtree__search:   红黑树查找
- *  log_search_rbtree__iter:  红黑树遍历 
+ *  log_search_rbtree__iter:  红黑树遍历
  */
 typedef rb_tree(struct log_search) log_search_rbtree_t;
 
@@ -252,7 +252,7 @@ void log_search_rbtree__init()
 void log_search_rbtree__destroy(LOG__RANGE_FILTER_ENUM type, void (*cb)(struct log_search *node, void *arg), void *arg)
 {
     assert(cb && "NULL callback error.");
-    
+
     log_search_rbtree_destroy(&log_search_rbtrees[type], cb, arg);
 }
 
@@ -279,21 +279,22 @@ void log_search_rbtree__remove(LOG__RANGE_FILTER_ENUM type, struct log_search *n
 struct log_search * log_search_rbtree__search(LOG__RANGE_FILTER_ENUM type, char *string)
 {
     struct log_search logdata = {.string = string, .use_strstr = false,};
-    
+
     return log_search_rbtree_search(&log_search_rbtrees[type], (const struct log_search*)&logdata);
 }
 
 /**
- * 使用 strstr() 进行子字符串查找
+ *
+ 使用 strstr() 进行子字符串查找
  */
 struct log_search * log_search_rbtree__search2(LOG__RANGE_FILTER_ENUM type, char *string)
 {
     struct log_search logdata = {.string = string, .use_strstr = true,};
-    
+
     return log_search_rbtree_search(&log_search_rbtrees[type], (const struct log_search*)&logdata);
 }
 
-struct log_search *log_search_rbtree__search_or_create(LOG__RANGE_FILTER_ENUM type, char *string) 
+struct log_search *log_search_rbtree__search_or_create(LOG__RANGE_FILTER_ENUM type, char *string)
 {
     struct log_search *search = log_search_rbtree__search(type, string);
     if(!search) {
@@ -310,7 +311,7 @@ struct log_search *log_search_rbtree__search_or_create(LOG__RANGE_FILTER_ENUM ty
         log_search_rbtree__insert(type, newnode);
 
         //printf("func rbtree node - %s\n", newnode->string);
-        
+
         search = newnode;
     }
 
@@ -321,11 +322,11 @@ struct log_search *log_search_rbtree__search_or_create(LOG__RANGE_FILTER_ENUM ty
 void log_search_rbtree__iter(LOG__RANGE_FILTER_ENUM type, void (*cb)(struct log_search *meta, void *arg), void *arg)
 {
     assert(cb && "NULL callback error.");
-    
+
     struct log_search *_next = NULL;
 
-    for(_next = log_search_rbtree_first(&log_search_rbtrees[type]); 
-        _next; 
+    for(_next = log_search_rbtree_first(&log_search_rbtrees[type]);
+        _next;
         _next = log_search_rbtree_next(&log_search_rbtrees[type], _next)) {
         cb(_next, arg);
     }

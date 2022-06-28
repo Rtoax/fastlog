@@ -61,26 +61,26 @@ enum {
     CMD_MAX_NUM,
 };
 struct command_help command_helps[] = {
-    
-    [CMD_SHOW_HELP] = { 
+
+    [CMD_SHOW_HELP] = {
         .name = "show",
         .params = "help",
         .summary = "show help",
         .group = GRP_SHOW,
     },
-    [CMD_SHOW_CMD_LIST] = { 
+    [CMD_SHOW_CMD_LIST] = {
         .name = "list",
         .params = "",
         .summary = "show all command list",
         .group = GRP_SHOW,
     },
-    [CMD_SHOW_LOG] = { 
+    [CMD_SHOW_LOG] = {
         .name = "log",
         .params = "all|crit|err|warn|info|debug txt|xml|json [FILENAME]",
         .summary = "show log by level and save to txt,xml,json FILENAME",
         .group = GRP_SHOW,
     },
-    [CMD_SHOW_LOGID] = { 
+    [CMD_SHOW_LOGID] = {
         .name = "logid",
         .params = "id all|crit|err|warn|info|debug txt|xml|json [FILENAME]",
         .summary = "show log by level and save to txt,xml,json FILENAME",
@@ -92,37 +92,37 @@ struct command_help command_helps[] = {
         .summary = "show metadata and save to txt,xml,json FILENAME",
         .group = GRP_SHOW,
     },
-    [CMD_SHOW_LS] = { 
+    [CMD_SHOW_LS] = {
         .name = "ls",
         .params = "",
         .summary = "system ls command",
         .group = GRP_SHOW,
     },
-    [CMD_SHOW_SEARCH] = { 
+    [CMD_SHOW_SEARCH] = {
         .name = "search",
         .params = "func|name|content|thread value all|crit|err|warn|info|debug txt|xml|json [FILENAME]",
         .summary = "search information",
         .group = GRP_SHOW,
     },
-    [CMD_SHOW_STATS] = { 
+    [CMD_SHOW_STATS] = {
         .name = "stats",
         .params = "level|name|func|thread",
         .summary = "show statistic information",
         .group = GRP_SHOW,
     },
-    [CMD_LOAD_LOG] = { 
+    [CMD_LOAD_LOG] = {
         .name = "load",
         .params = "log [FILENAME]",
         .summary = "load a new logdata file, named by FILENAME",
         .group = GRP_LOAD,
     },
-    [CMD_QUIT_QUIT] = { 
+    [CMD_QUIT_QUIT] = {
         .name = "quit",
         .params = "",
         .summary = "quit program",
         .group = GRP_QUIT,
     },
-    [CMD_QUIT_EXIT] = { 
+    [CMD_QUIT_EXIT] = {
         .name = "exit",
         .params = "",
         .summary = "quit program",
@@ -136,14 +136,14 @@ char cli_prompt[64]  ={"FastLog>> "};
 static void show_command_list()
 {
     int i;
-    
+
     printf("\n");
     printf("\t input CMD help to check command manual.\n");
     printf("\n");
-    
+
     for (i=0; i<CMD_MAX_NUM; i++) {
-        printf("\t %10s: %s\n", 
-                            command_helps[i].name, 
+        printf("\t %10s: %s\n",
+                            command_helps[i].name,
                             command_helps[i].summary);
     }
 }
@@ -153,37 +153,37 @@ static void show_help()
     printf("\n");
     printf("\t `show help`: show this information.\n");
     printf("\n");
-    printf("\t %10s %s: %s\n", 
-                        command_helps[CMD_SHOW_HELP].name, 
-                        command_helps[CMD_SHOW_HELP].params, 
+    printf("\t %10s %s: %s\n",
+                        command_helps[CMD_SHOW_HELP].name,
+                        command_helps[CMD_SHOW_HELP].params,
                         command_helps[CMD_SHOW_HELP].summary);
-    printf("\t %10s %s: %s\n", 
-                        command_helps[CMD_SHOW_CMD_LIST].name, 
-                        command_helps[CMD_SHOW_CMD_LIST].params, 
+    printf("\t %10s %s: %s\n",
+                        command_helps[CMD_SHOW_CMD_LIST].name,
+                        command_helps[CMD_SHOW_CMD_LIST].params,
                         command_helps[CMD_SHOW_CMD_LIST].summary);
-    printf("\t %10s %s: %s\n", 
-                        command_helps[CMD_SHOW_LOG].name, 
-                        command_helps[CMD_SHOW_LOG].params, 
+    printf("\t %10s %s: %s\n",
+                        command_helps[CMD_SHOW_LOG].name,
+                        command_helps[CMD_SHOW_LOG].params,
                         command_helps[CMD_SHOW_LOG].summary);
-    printf("\t %10s %s: %s\n", 
-                        command_helps[CMD_SHOW_LOGID].name, 
-                        command_helps[CMD_SHOW_LOGID].params, 
+    printf("\t %10s %s: %s\n",
+                        command_helps[CMD_SHOW_LOGID].name,
+                        command_helps[CMD_SHOW_LOGID].params,
                         command_helps[CMD_SHOW_LOGID].summary);
-    printf("\t %10s %s: %s\n", 
-                        command_helps[CMD_SHOW_META].name, 
-                        command_helps[CMD_SHOW_META].params, 
+    printf("\t %10s %s: %s\n",
+                        command_helps[CMD_SHOW_META].name,
+                        command_helps[CMD_SHOW_META].params,
                         command_helps[CMD_SHOW_META].summary);
-    printf("\t %10s %s: %s\n", 
-                        command_helps[CMD_SHOW_LS].name, 
-                        command_helps[CMD_SHOW_LS].params, 
+    printf("\t %10s %s: %s\n",
+                        command_helps[CMD_SHOW_LS].name,
+                        command_helps[CMD_SHOW_LS].params,
                         command_helps[CMD_SHOW_LS].summary);
-    printf("\t %10s %s: %s\n", 
-                        command_helps[CMD_SHOW_SEARCH].name, 
-                        command_helps[CMD_SHOW_SEARCH].params, 
+    printf("\t %10s %s: %s\n",
+                        command_helps[CMD_SHOW_SEARCH].name,
+                        command_helps[CMD_SHOW_SEARCH].params,
                         command_helps[CMD_SHOW_SEARCH].summary);
-    printf("\t %10s %s: %s\n", 
-                        command_helps[CMD_SHOW_STATS].name, 
-                        command_helps[CMD_SHOW_STATS].params, 
+    printf("\t %10s %s: %s\n",
+                        command_helps[CMD_SHOW_STATS].name,
+                        command_helps[CMD_SHOW_STATS].params,
                         command_helps[CMD_SHOW_STATS].summary);
     printf("\n");
 }
@@ -193,11 +193,11 @@ static void load_help()
     printf("\n");
     printf("\t `load help`: show this information.\n");
     printf("\n");
-    printf("\t %10s %s: %s\n", 
-                        command_helps[CMD_LOAD_LOG].name, 
-                        command_helps[CMD_LOAD_LOG].params, 
+    printf("\t %10s %s: %s\n",
+                        command_helps[CMD_LOAD_LOG].name,
+                        command_helps[CMD_LOAD_LOG].params,
                         command_helps[CMD_LOAD_LOG].summary);
-    
+
     printf("\n");
 }
 
@@ -231,7 +231,7 @@ static void cliInitHelp(void)
 }
 
 /* Linenoise completion callback. */
-static void decoder_completionCallback(const char *buf, linenoiseCompletions *lc) 
+static void decoder_completionCallback(const char *buf, linenoiseCompletions *lc)
 {
     size_t startpos = 0;
     int mask;
@@ -333,20 +333,20 @@ void cli_init()
     linenoiseSetHintsCallback(decoder_hintsCallback);
 
     linenoiseSetFreeHintsCallback(decoder_freeHintsCallback);
-    
+
     /* Load history from file. The history file is just a plain text file
      * where entries are separated by newlines. */
     linenoiseHistoryLoad("fastlog.cli.history.txt"); /* Load the history at startup */
 
 }
 
-static int cmd_show_level_getarg(int argc, int argc_off, char **argv, 
+static int cmd_show_level_getarg(int argc, int argc_off, char **argv,
                     enum FASTLOG_LEVEL *log_level, LOG_OUTPUT_TYPE *file_type, char **filename)
 {
     if(argc == 1+argc_off) {
         return -2;
     }
-    
+
     /* 日志级别 */
     if(strncasecmp(argv[1+argc_off], "all", 3) == 0) {
         *log_level = FASTLOGLEVEL_ALL;
@@ -400,7 +400,7 @@ static int cmd_show_level_getarg(int argc, int argc_off, char **argv,
  *  过滤条件下可用如下方式调用:
  *  `cmd_show_level(log_level, file_type, filename, "TEST2", "routine", "rtoax:2", "World");`
  *
- *  
+ *
  */
 static void cmd_show_level(enum FASTLOG_LEVEL log_level, LOG_OUTPUT_TYPE file_type, char * filename,
                            char *match_name, char *match_func, char *match_thread, char *match_content,
@@ -411,9 +411,9 @@ static void cmd_show_level(enum FASTLOG_LEVEL log_level, LOG_OUTPUT_TYPE file_ty
     if(filename) {
         open_filename = filename;
     }
-    
+
     struct output_struct *output = NULL;
-    
+
     if(file_type & LOG_OUTPUT_FILE_TXT) {
         output = &output_txt;
     } else if(file_type & LOG_OUTPUT_FILE_XML) {
@@ -424,7 +424,7 @@ static void cmd_show_level(enum FASTLOG_LEVEL log_level, LOG_OUTPUT_TYPE file_ty
         printf("\t just support txt, xml, json.\n");
         return;
     }
-    
+
     output_open(output, open_filename);
 
     //是否输出头部
@@ -433,7 +433,7 @@ static void cmd_show_level(enum FASTLOG_LEVEL log_level, LOG_OUTPUT_TYPE file_ty
     }
 
     /*
-     *  过滤器 
+     *  过滤器
      *
      *  根据入参决定 filter 规则，当前支持四种(见`__LOG__RANGE_FILTER_NUM`)
      */
@@ -467,7 +467,7 @@ static void cmd_show_level(enum FASTLOG_LEVEL log_level, LOG_OUTPUT_TYPE file_ty
     if(file_type & LOG_OUTPUT_ITEM_META) {
         metadata_rbtree__iter_level(log_level, output_metadata, output);
     }
-    
+
     //是否输出日志数据
     if(file_type & LOG_OUTPUT_ITEM_LOG) {
 
@@ -484,12 +484,12 @@ static void cmd_show_level(enum FASTLOG_LEVEL log_level, LOG_OUTPUT_TYPE file_ty
             id_list__iter(log_id, output_logdata, output);
         }
     }
-    
+
     //是否输出尾部
     if(file_type & LOG_OUTPUT_ITEM_FOOT) {
         output_footer(output);
     }
-    
+
     output_close(output);
 
     printf("\n");
@@ -499,7 +499,7 @@ static void cmd_show_level(enum FASTLOG_LEVEL log_level, LOG_OUTPUT_TYPE file_ty
 static void cmd_load_log(char *filename)
 {
     int ret;
-    
+
     /* 日志数据文件的读取 */
     ret = load_logdata_file(filename);
     if(ret) {
@@ -512,14 +512,14 @@ static void cmd_load_log(char *filename)
         printf("\t metadata file and logdata file not match.\n");
         goto error;
     }
-    
+
     progress_reset(&pro_bar, filename);
-    
+
     fastlog_logdata_t *logdata = (fastlog_logdata_t *)log_hdr()->data;
     parse_logdata(logdata, log_mmapfile()->mmap_size - sizeof(struct fastlog_file_header));
 
     printf("\n\t Load fastlog logdata file `%s` success.\n", filename);
-    
+
 error:
     release_logdata_file(); //释放元数据内存
     return;
@@ -536,8 +536,8 @@ static void __output_logsearch(struct log_search *logsearch, void *arg)
 static int invoke_command(int argc, char **argv, long repeat)
 {
     int ret;
-    
-    //show 
+
+    //show
     if(strncasecmp(argv[0], "show", 4) == 0) {
         if(argc == 1) {
             printf("\t input `show help` to check show command.\n");
@@ -549,15 +549,15 @@ static int invoke_command(int argc, char **argv, long repeat)
                 return 0;
             }
         }
-    } 
-    //log 
+    }
+    //log
     else if(strcasecmp(argv[0], "log") == 0) {
 
         /*all|crit|err|warn|info|debug txt|xml|json [FILENAME] */
         enum FASTLOG_LEVEL log_level = FASTLOG_ERR;
         LOG_OUTPUT_TYPE file_type = LOG_OUTPUT_FILE_TXT;
         char *filename = NULL;
-        
+
         ret = cmd_show_level_getarg(argc, 0, argv, &log_level, &file_type, &filename);
         if(ret) {
             printf("\t input `show help` to check show command.\n");
@@ -572,10 +572,10 @@ static int invoke_command(int argc, char **argv, long repeat)
     }
     //logid
     else if(strcasecmp(argv[0], "logid") == 0) {
-        
+
         /*id all|crit|err|warn|info|debug txt|xml|json [FILENAME] */
         int log_id = 0;
-        
+
         enum FASTLOG_LEVEL log_level = FASTLOGLEVEL_ALL;
         LOG_OUTPUT_TYPE file_type = LOG_OUTPUT_FILE_TXT;
         char *filename = NULL;
@@ -607,24 +607,24 @@ static int invoke_command(int argc, char **argv, long repeat)
         enum FASTLOG_LEVEL log_level = FASTLOG_ERR;
         LOG_OUTPUT_TYPE file_type = LOG_OUTPUT_FILE_TXT;
         char *filename = NULL;
-        
+
         ret = cmd_show_level_getarg(argc, 0, argv, &log_level, &file_type, &filename);
         if(ret) {
             printf("\t input `show help` to check show command.\n");
             return 0;
         }
-        
+
         // 默认输出所有项
         file_type |= LOG_OUTPUT_ITEM_META_MASK;
-        
+
         cmd_show_level(log_level, file_type, filename, NULL, NULL, NULL, NULL, 0);
-    
-    } 
+
+    }
     //ls
     else if(strncasecmp(argv[0], "ls", 2) == 0) {
         system("ls ./");
 
-    } 
+    }
     //load
     else if(strncasecmp(argv[0], "load", 4) == 0) {
         if(argc == 1) {
@@ -650,24 +650,24 @@ static int invoke_command(int argc, char **argv, long repeat)
                 } else {
                     printf("\t MUST Input file name.\n");
                 }
-                
+
                 return 0;
             } else {
                 printf("\t input `load help` to check load command.\n");
                 return 0;
             }
         }
-    } 
+    }
     //list
     else if(strncasecmp(argv[0], "list", 4) == 0)  {
         show_command_list();
-        
-    } 
+
+    }
     //search
     else if(strncasecmp(argv[0], "search", 6) == 0) {
 
         //func|name|content|thread value
-    
+
         char *search_type = NULL;
         char *search_value = NULL;
         char *search_values[__LOG__RANGE_FILTER_NUM] = {NULL};
@@ -675,20 +675,20 @@ static int invoke_command(int argc, char **argv, long repeat)
         LOG_OUTPUT_TYPE file_type = LOG_OUTPUT_FILE_TXT;
         enum FASTLOG_LEVEL log_level = FASTLOGLEVEL_ALL;
         char *filename = NULL;
-        
+
         int argv_idx = 0;
-        
+
         if(argc <= 2) {
             printf("\t Must has one [func|name|content|thread value] pair. Like `search func main`\n");
             return 0;
-            
+
         } else if(argc >= 3) {
-            
+
             argv_idx = 1;
-            
+
             search_type = argv[argv_idx];
             search_value = argv[argv_idx+1];
-            
+
             if(strncasecmp(search_type, "func", 4) == 0) {
                 search_values[LOG__RANGE_FUNC_ENUM] = search_value;
             } else if(strncasecmp(search_type, "name", 4) == 0) {
@@ -697,15 +697,15 @@ static int invoke_command(int argc, char **argv, long repeat)
                 search_values[LOG__RANGE_CONTENT_ENUM] = search_value;
             } else if(strncasecmp(search_type, "thread", 6) == 0) {
                 search_values[LOG__RANGE_THREAD_ENUM] = search_value;
-            } else { 
+            } else {
                 printf("\t search item MUST be one of `func|name|content|thread`.\n");
                 return -1;
             }
-            
+
             argv_idx += 2;      /* 参数成对出现 */
 
             if(argc > argv_idx) {
-    
+
                 /* 日志级别 */
                 if(strncasecmp(argv[argv_idx], "all", 3) == 0) {
                     log_level = FASTLOGLEVEL_ALL;
@@ -723,7 +723,7 @@ static int invoke_command(int argc, char **argv, long repeat)
                     printf("\t show level MUST be one of all|crit|err|warn|info|debug.\n");
                     return -1;
                 }
-                
+
                 argv_idx++;
 
                 if(argc > argv_idx) {
@@ -740,7 +740,7 @@ static int invoke_command(int argc, char **argv, long repeat)
                     }
                     argv_idx++;
                 }
-                
+
                 if(argc > argv_idx) {
                     filename = argv[argv_idx];
                     if(access(filename, F_OK) == 0) {
@@ -749,30 +749,30 @@ static int invoke_command(int argc, char **argv, long repeat)
                     }
                 }
 
-                
+
             }
 
 
 //            printf("\t log_level = %x\n", log_level);
 //            printf("\t file type = %x\n", file_type);
 //            printf("\t filename  = %s\n", filename);
-//            
+//
 //            for(i=0; i<__LOG__RANGE_FILTER_NUM; i++) {
 //                if(search_values[i])
 //                    printf("\t search %d value %s\n", i, search_values[i]);
 //            }
-            
+
             file_type |= LOG_OUTPUT_ITEM_LOG_MASK;
-            
-            cmd_show_level(log_level, file_type, filename, 
-                            search_values[LOG__RANGE_NAME_ENUM], 
-                            search_values[LOG__RANGE_FUNC_ENUM], 
-                            search_values[LOG__RANGE_THREAD_ENUM], 
+
+            cmd_show_level(log_level, file_type, filename,
+                            search_values[LOG__RANGE_NAME_ENUM],
+                            search_values[LOG__RANGE_FUNC_ENUM],
+                            search_values[LOG__RANGE_THREAD_ENUM],
                             search_values[LOG__RANGE_CONTENT_ENUM], 0);
         }
 
-    
-    } 
+
+    }
     //stats level|name|func|thread
     else if(strncasecmp(argv[0], "stats", 5) == 0) {
         if(argc == 1) {
@@ -782,24 +782,24 @@ static int invoke_command(int argc, char **argv, long repeat)
 
             //stat level
             if(strncasecmp(argv[1], "level", 5) == 0) {
-            
-                fprintf(stdout, "        %-19s %-19s %-19s %-19s %-19s \n", 
-                                                 strlevel_color(FASTLOG_CRIT), 
+
+                fprintf(stdout, "        %-19s %-19s %-19s %-19s %-19s \n",
+                                                 strlevel_color(FASTLOG_CRIT),
                                                  strlevel_color(FASTLOG_ERR),
                                                  strlevel_color(FASTLOG_WARNING),
                                                  strlevel_color(FASTLOG_INFO),
                                                  strlevel_color(FASTLOG_DEBUG));
-                
-                
-                                                                                 
-                fprintf(stdout, "Number  %-8ld %-8ld %-8ld %-8ld %-8ld \n", 
+
+
+
+                fprintf(stdout, "Number  %-8ld %-8ld %-8ld %-8ld %-8ld \n",
                                                  level_count(FASTLOG_CRIT),
                                                  level_count(FASTLOG_ERR),
                                                  level_count(FASTLOG_WARNING),
                                                  level_count(FASTLOG_INFO),
                                                  level_count(FASTLOG_DEBUG));
                 fprintf(stdout, "\n");
-                
+
                 fprintf(stdout, "Total  metas  %ld(%ld)\n", meta_count(), meta_hdr()->data_num);
                 fprintf(stdout, "Total  logs   %ld(%ld)\n", log_count(), decoder_config.total_flog_num);
 
@@ -811,18 +811,18 @@ static int invoke_command(int argc, char **argv, long repeat)
                 printf("%5s-----------------------------------------\n", "");
 
                 log_search_rbtree__iter(LOG__RANGE_NAME_ENUM, __output_logsearch, NULL);
-            } 
+            }
             //stat func
             else if(strncasecmp(argv[1], "func", 4) == 0) {
-                
+
                 printf("%5s  %-20s  %-5s\n", "", "FUNC", "LOGs");
                 printf("%5s-----------------------------------------\n", "");
 
                 log_search_rbtree__iter(LOG__RANGE_FUNC_ENUM, __output_logsearch, NULL);
-            } 
+            }
             //stat thread
             else if(strncasecmp(argv[1], "thread", 5) == 0) {
-                
+
                 printf("%5s  %-20s  %-5s\n", "", "THREAD", "LOGs");
                 printf("%5s-----------------------------------------\n", "");
 
@@ -831,10 +831,10 @@ static int invoke_command(int argc, char **argv, long repeat)
                 printf("\t Must input one of level|name|func|thread.\n");
                 return 0;
             }
-        } 
+        }
 
 
-        
+
     }
     else {
         printf("\t input `list` to check all command.\n");
@@ -851,17 +851,17 @@ void cli_loop()
 
     int argc;
     char **argv;
-    
+
     while((line = linenoise(cli_prompt)) != NULL) {
-        
+
         if (line[0] == '\0') {
             continue;
         }
-        
+
         long repeat = 1;
         int skipargs = 0;
         char *endptr = NULL;
-        
+
         argv = cliSplitArgs(line,&argc);
 
         /* check if we have a repeat command option and
@@ -884,7 +884,7 @@ void cli_loop()
 
         if (history) linenoiseHistoryAdd(line);
         if (historyfile) linenoiseHistorySave(historyfile);
-        
+
         if (argv == NULL) {
             printf("\t Invalid argument(s)\n");
             linenoiseFree(line);

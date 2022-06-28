@@ -25,7 +25,7 @@ ensureStagingBufferAllocated()
      *  创建 buffer 对应的 eventfd，并将其 添加 至 后台线程轮询的 epoll 中
      */
     __bg_add_buffer_event_to_epoll();
-    
+
 }
 
 
@@ -36,7 +36,7 @@ create_buff(uint32_t bufferId)
     struct StagingBuffer *staging_buf = NULL;
 
 //    printf("create staging buffer, buffer id = %d\n", bufferId);
-    
+
     staging_buf = malloc(sizeof(struct StagingBuffer));
     assert(staging_buf && "malloc error");
 
@@ -144,7 +144,7 @@ reserveSpaceInternal(struct StagingBuffer *buff, size_t nbytes, bool blocking) {
  *      Pointer to at least nbytes of contiguous space
  */
 fl_inline char *
-reserveProducerSpace(struct StagingBuffer *buff, size_t nbytes) 
+reserveProducerSpace(struct StagingBuffer *buff, size_t nbytes)
 {
     ++buff->numAllocations;
 
@@ -157,7 +157,7 @@ reserveProducerSpace(struct StagingBuffer *buff, size_t nbytes)
 }
 
 fl_inline void
-finishReservation(struct StagingBuffer *buff, size_t nbytes) 
+finishReservation(struct StagingBuffer *buff, size_t nbytes)
 {
     assert(nbytes < buff->minFreeSpace);
     assert(buff->producerPos + nbytes <

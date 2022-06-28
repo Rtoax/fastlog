@@ -21,7 +21,7 @@ int output_open(struct output_struct *output, char *filename)
     if(filename) {
         output->filename = strdup(filename);
     }
-    
+
     progress_reset(&pro_bar, filename);
 
     return output->ops->open(output);
@@ -52,7 +52,7 @@ int output_setfilter(struct output_struct *output, struct output_filter *filter,
     output->filter[output->filter_num] = filter;
     output->filter_arg[output->filter_num] = arg;
     output->filter_num++;
-    
+
     return 0;
 }
 
@@ -65,11 +65,11 @@ bool output_callfilter(struct output_struct *output, struct logdata_decode *logd
     int i;
     struct output_filter *filter = NULL;
     struct output_filter_arg *filter_arg = NULL;
-    
+
     for(i=0; i<output->filter_num; i++) {
         filter = output->filter[i];
         filter_arg = &output->filter_arg[i];
-    
+
         /* 如果 filter 为空，等同于 匹配成功 */
         if(!filter) continue;
 
@@ -121,7 +121,7 @@ void progress_output(struct output_struct *output, unsigned long i, unsigned lon
 {
     float f = 0.0f;
     int interval = total_num>100?total_num/100:total_num;
-    
+
     //当输出到文件时，显示进度条
     if(output->filename) {
         if(i % interval == 0  || i == total_num) {
@@ -138,14 +138,14 @@ void progress_output(struct output_struct *output, unsigned long i, unsigned lon
 void output_metadata(struct metadata_decode *meta, void *arg)
 {
     //printf("metadata_print logID %d\n", meta->log_id);
-    
+
     struct output_struct *output = (struct output_struct *)arg;
-    
+
     if(!output->enable) {
         fprintf(stderr, "file type not support.\n");
         return;
     }
-    
+
     output->ops->meta_item(output, meta);
 
     progress_output(output, output->output_meta_cnt, decoder_config.total_fmeta_num);
@@ -159,7 +159,7 @@ void output_logdata(struct logdata_decode *logdata, void *arg)
         return ;
     }
 
-    // 从 "Hello, %s, %d" + World\02021 
+    // 从 "Hello, %s, %d" + World\02021
     // 转化为
     // Hello, World, 2021
     reprintf(logdata, output);
@@ -175,7 +175,7 @@ int output_log_item(struct output_struct *output, struct logdata_decode *logdata
     }
 
     int ret = 0;
-    
+
     ret = output->ops->log_item(output, logdata, log);
 
     progress_output(output, output->output_log_cnt, decoder_config.total_flog_num);
@@ -201,13 +201,13 @@ int output_close(struct output_struct *output)
 
     if(output->filename) {
         free(output->filename);
-        output->filename = NULL;    
-        
+        output->filename = NULL;
+
         printf("\n");   //当输出到文件时，显示进度条，这时需要最后输出一个换行
     }
 
     output_clearfilter(output);
-    
+
     return 0;
 }
 
@@ -218,11 +218,11 @@ int release_file(struct fastlog_file_mmap *mapfile)
 }
 
 /* 以只读方式映射一个文件 */
-static int load_file(struct fastlog_file_mmap *mapfile, char *file, 
+static int load_file(struct fastlog_file_mmap *mapfile, char *file,
                         struct fastlog_file_header **hdr, unsigned int magic)
 {
     int ret;
-    
+
     //元数据文件映射
     ret = mmap_fastlog_logfile_read(mapfile, file);
     if(ret) {
@@ -245,7 +245,7 @@ static int load_file(struct fastlog_file_mmap *mapfile, char *file,
 
     return 0;
 }
-                        
+
 struct fastlog_file_mmap *meta_mmapfile()
 {
     return &ro_metadata_mmap;
@@ -297,7 +297,7 @@ int match_metadata_and_logdata()
     uint64_t logdata_start_rdtsc = logdata_header->start_rdtsc;
 
     /* 在写入时，这两个应该数值完全相等，所以这里进行检测 */
-    return ((metadata_cycles_per_sec == logdata_cycles_per_sec) 
+    return ((metadata_cycles_per_sec == logdata_cycles_per_sec)
         && (metadata_start_rdtsc == logdata_start_rdtsc));
 }
 

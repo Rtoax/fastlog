@@ -81,7 +81,7 @@ void log_ids__iter(void (*cb)(int log_id, void* arg), void *arg)
 void test_log_ids()
 {
     int log_id;
-    
+
     log_ids__init();
 
     log_ids__set(1);
@@ -104,7 +104,7 @@ void test_log_ids()
  *  所有级别的链表
  *
  *  level_lists__init:  初始化级别链表
- *  
+ *
  *  level_list__insert: 向一个级别链表中插入
  *  level_list__remove: 从一个级别链表中移除
  *  level_list__iter:   遍历一个级别的链表
@@ -162,7 +162,7 @@ void level_list__iter(enum FASTLOG_LEVEL level, void (*cb)(struct logdata_decode
         assert(0 && "wrong level in");
     }
     assert(cb && "NULL callback error.");
-    
+
     struct logdata_decode *logdata;
     list_for_each_entry(logdata, &level_lists[level], list_level) {
         cb(logdata, arg);
@@ -202,12 +202,12 @@ void id_list__insert_raw(struct metadata_decode *metadata, struct logdata_decode
 void id_list__insert(int log_id, struct logdata_decode *logdata)
 {
     struct metadata_decode *metadata = metadata_rbtree__search(log_id);
-    
+
     id_list__insert_raw(metadata, logdata);
 }
 
 void id_list__remove_raw(struct metadata_decode *metadata, struct logdata_decode *logdata)
-{   
+{
     if(unlikely(!metadata) || unlikely(!logdata)) {
         assert(0 && "NULL error");
     }
@@ -219,7 +219,7 @@ void id_list__remove_raw(struct metadata_decode *metadata, struct logdata_decode
 void id_list__remove(int log_id, struct logdata_decode *logdata)
 {
     struct metadata_decode *metadata = metadata_rbtree__search(log_id);
-    
+
     id_list__remove_raw(metadata, logdata);
 }
 
@@ -230,7 +230,7 @@ int id_list__iter_raw(struct metadata_decode *metadata, void (*cb)(struct logdat
         return -1;
     }
     assert(cb && "NULL callback error.");
-    
+
     struct logdata_decode *logdata;
     list_for_each_entry(logdata, &metadata->id_list, list_id) {
         cb(logdata, arg);
@@ -241,7 +241,7 @@ int id_list__iter_raw(struct metadata_decode *metadata, void (*cb)(struct logdat
 int id_list__iter(int log_id, void (*cb)(struct logdata_decode *logdata, void *arg), void *arg)
 {
     struct metadata_decode *metadata = metadata_rbtree__search(log_id);
-    
+
     return id_list__iter_raw(metadata, cb, arg);
 }
 
@@ -268,7 +268,7 @@ void log_search_list__remove(struct log_search *node, struct logdata_decode *log
 void log_search_list__iter(struct log_search *node, void (*cb)(struct logdata_decode *logdata, void *arg), void *arg)
 {
     assert(cb && "NULL callback error.");
-    
+
     struct logdata_decode *logdata;
     list_for_each_entry(logdata, &node->log_list_head, list_search[node->string_type]) {
         cb(logdata, arg);
@@ -304,38 +304,40 @@ static void iter_log_search2(struct log_search *search, void *arg)
 
 
 /**
- * 使用 字符串 查找
+ *
+ 使用 字符串 查找
  */
 void log_search_list__iter2(LOG__RANGE_FILTER_ENUM type, char *string, void (*cb)(struct logdata_decode *logdata, void *arg), void *arg)
 {
     assert(cb && "NULL callback error.");
-    
+
     struct log_search *search = NULL;
 
     if(string) {
-        
+
         search = log_search_rbtree__search(type, string);
 
         log_search_list__iter(search, cb, arg);
-    
+
     } else {
-        
+
         struct iter_arg __arg;
         __arg.cb = cb;
         __arg.arg = arg;
         log_search_rbtree__iter(type, iter_log_search, (void*)&__arg);
     }
-    
+
 
 }
 
 /**
- * 使用 子字符串 查找
+ *
+ 使用 子字符串 查找
  */
 void log_search_list__iter3(LOG__RANGE_FILTER_ENUM type, char *string, void (*cb)(struct logdata_decode *logdata, void *arg), void *arg)
 {
     assert(cb && string && "NULL callback|string error.");
-    
+
     void (*iter_log_fn)(struct log_search *search, void *arg);
 
     if(string) {
@@ -343,12 +345,12 @@ void log_search_list__iter3(LOG__RANGE_FILTER_ENUM type, char *string, void (*cb
     } else {
         iter_log_fn = iter_log_search;
     }
-    
+
     struct iter_arg __arg;
     __arg.cb = cb;
     __arg.arg = arg;
     __arg.string = string;
-    
+
     log_search_rbtree__iter(type, iter_log_fn, (void*)&__arg);
 
 }

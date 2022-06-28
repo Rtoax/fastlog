@@ -19,7 +19,7 @@ typedef enum {
      _ANSI_BLINK,
      _ANSI_RESET,
 } color_type;
-     
+
 #define _ANSI_NONE_STR       ""
 #define _ANSI_GRAY_STR       "\x1b[1;37;40m"
 #define _ANSI_CYAN_STR       "\x1b[1;36m"
@@ -31,7 +31,7 @@ typedef enum {
 #define _ANSI_BOLD_STR       "\x1b[1m"
 #define _ANSI_SHINE_STR      "\x1b[1;35m" /*"\x1b[1;5;35m"*/
 #define _ANSI_BLINK_STR      "\x1b[1;4;5m"
-     
+
 #define _ANSI_RESET_STR      "\x1b[0m"
 
 #define _ITEM(e) [e] = e##_STR
@@ -53,22 +53,22 @@ const static char _unused *COLORS[] = {
 
 
 static const char _unused* FASTLOG_LEVEL_NAME[] = {
-    "unknown", 
-    "CRIT", 
+    "unknown",
+    "CRIT",
     "ERRO",
-    "WARN", 
-    "INFO", 
+    "WARN",
+    "INFO",
     "DEBG",
-    "unknown", 
+    "unknown",
     "unknown"
 };
 static const char* FASTLOG_LEVEL_NAME_COLORFUL[] = {
     "unknown",
-    _ANSI_PURPLE_STR"CRIT"_ANSI_RESET_STR, 
+    _ANSI_PURPLE_STR"CRIT"_ANSI_RESET_STR,
     _ANSI_RED_STR"ERRO"_ANSI_RESET_STR,
-    _ANSI_YELLOW_STR"WARN"_ANSI_RESET_STR, 
-    _ANSI_BLUE_STR"INFO"_ANSI_RESET_STR, 
-    _ANSI_BOLD_STR"DEBG"_ANSI_RESET_STR, 
+    _ANSI_YELLOW_STR"WARN"_ANSI_RESET_STR,
+    _ANSI_BLUE_STR"INFO"_ANSI_RESET_STR,
+    _ANSI_BOLD_STR"DEBG"_ANSI_RESET_STR,
     "unknown",
     "unknown"
 };
@@ -93,7 +93,7 @@ const char *strlevel_color(enum FASTLOG_LEVEL level)
 
 
 
-fl_inline int  
+fl_inline int
 fastlog_atomic64_cmpset(volatile uint64_t *dst, uint64_t exp, uint64_t src)
 {
 	uint8_t res;
@@ -112,20 +112,20 @@ fastlog_atomic64_cmpset(volatile uint64_t *dst, uint64_t exp, uint64_t src)
 	return res;
 }
 
-fl_inline void 
+fl_inline void
 fastlog_atomic64_init(fastlog_atomic64_t *v)
 {
 	fastlog_atomic64_cmpset((volatile uint64_t *)&v->cnt, v->cnt, 0);
 }
 
-fl_inline int64_t 
+fl_inline int64_t
 fastlog_atomic64_read(fastlog_atomic64_t *v)
 {
     return v->cnt;
 }
 
-fl_inline void 
-fastlog_atomic64_add(fastlog_atomic64_t *v, int64_t inc) 
+fl_inline void
+fastlog_atomic64_add(fastlog_atomic64_t *v, int64_t inc)
 {
 	asm volatile(
 			"lock ; "
@@ -136,7 +136,7 @@ fastlog_atomic64_add(fastlog_atomic64_t *v, int64_t inc)
 			);
 }
 
-fl_inline void 
+fl_inline void
 fastlog_atomic64_inc(fastlog_atomic64_t *v)
 {
 	asm volatile(
@@ -161,14 +161,14 @@ fastlog_atomic64_dec(fastlog_atomic64_t *v)
 
 
 /* 获取 当前 CPU */
-fl_inline int 
-__fastlog_sched_getcpu() 
-{ 
-    return sched_getcpu(); 
+fl_inline int
+__fastlog_sched_getcpu()
+{
+    return sched_getcpu();
 }
 
 /* 同上 */
-fl_inline unsigned 
+fl_inline unsigned
 __fastlog_getcpu()
 {
     unsigned cpu, node;
@@ -176,7 +176,7 @@ __fastlog_getcpu()
     return cpu;
 }
 
-fl_inline  uint64_t 
+fl_inline  uint64_t
 __fastlog_rdtsc()
 {
     uint32_t lo, hi;

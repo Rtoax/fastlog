@@ -1,7 +1,7 @@
 /**
  *  FastLog 低时延 LOG日志
  *
- *  
+ *
  */
 #define _GNU_SOURCE
 #include <pthread.h>
@@ -22,8 +22,9 @@
 #ifndef _FASTLOG_USE_EVENTFD
 #error "Must define _FASTLOG_USE_EVENTFD 0 or 1."
 /**
- * 此宏定义标识了一个代码分支，该分支决定用户线程和后台线程的交互方式
- *  
+ *
+ 此宏定义标识了一个代码分支，该分支决定用户线程和后台线程的交互方式
+ *
  *  _FASTLOG_USE_EVENTFD=0(false) 使用轮询的方式
  *  _FASTLOG_USE_EVENTFD=1(true) 使用通知(`eventfd()`)+轮询的方式
  *
@@ -37,7 +38,7 @@
 
 
 /**
- *  日志索引 
+ *  日志索引
  *
  *  初始值在`fastlog_init()` 设置为 1
  *  解析命令中`parse_logdata` 遇到0值(或文件结尾)即为结束标志
@@ -49,13 +50,13 @@ static fastlog_atomic64_t  maxlogId;
  *  默认日志文件大小和文件数
  */
 static size_t max_nr_logfile = 24;
-static size_t log_file_size = FATSLOG_LOG_FILE_SIZE_DEFAULT; 
+static size_t log_file_size = FATSLOG_LOG_FILE_SIZE_DEFAULT;
 
 
 /**
  *  后台线程和用户线程之间的缓冲区定义
  */
-__thread struct StagingBuffer *stagingBuffer = NULL; 
+__thread struct StagingBuffer *stagingBuffer = NULL;
 
 struct StagingBuffer *threadBuffers[1024] = {NULL}; //最大支持的线程数，最多有多少个`stagingBuffer`
 fastlog_atomic64_t  stagingBufferId;
@@ -83,7 +84,7 @@ static struct fastlog_file_mmap metadata_mmap, logdata_mmap;
  *  需要注意:
  *  元数据指针`metadata_mmap_curr_ptr`会被多线程访问，使用`metadata_mmap_lock`保护
  *  日志数据指针`logdata_mmap_curr_ptr`只会被`fastlog_background_thread`访问，故无需锁
- *  
+ *
  */
 static pthread_spinlock_t metadata_mmap_lock;
 static char *metadata_mmap_curr_ptr = NULL;
@@ -103,9 +104,9 @@ enum FASTLOG_LEVEL __curr_level = FASTLOG_DEBUG;
 static char metadata_file_default[128] = {FATSLOG_METADATA_FILE_DEFAULT};
 static char logdata_file_default[128] = {FATSLOG_LOG_FILE_DEFAULT};
 
-static void mmap_new_fastlog_file(struct fastlog_file_mmap *mmap_file, 
-                                    char *filename, 
-                                    char *backupfilename, 
+static void mmap_new_fastlog_file(struct fastlog_file_mmap *mmap_file,
+                                    char *filename,
+                                    char *backupfilename,
                                     size_t size,
                                     int magic,
                                     uint64_t cycles_per_sec,
@@ -131,22 +132,22 @@ static fl_inline void bg_handle_one_log(struct arg_hdr *log_args, size_t size)
 
     /**
      *  当日志映射文件已满
-     *  
+     *
      *  当内存映射`当前指针`大于文件映射地址+文件长度后，将这个文件同步至磁盘（元数据也进行了同步）
      *  然后，新建一个文件映射，注意这个文件映射规律如下：
      *      fastlog.log     [默认名称]
      *      fastlog.log.0   [上面文件满后，新建文件，并映射到内存]
      *      fastlog.log.1   [以此类推]
      *      fastlog.log.[N] [参数`N`可配置]
-     *  
+     *
      */
     if(unlikely(logdata_mmap_curr_ptr + size > (logdata_mmap.mmapaddr + logdata_mmap.mmap_size))) {
 
         /**
-         *  将其同步至磁盘 
-         *  
+         *  将其同步至磁盘
+         *
          *  这里的开销是比较大的，可以释放增大每个映射文件的大小来减少同步次数
-         *  
+         *
          */
         msync_fastlog_logfile_write(&metadata_mmap);
         msync_fastlog_logfile_write(&logdata_mmap);
@@ -158,7 +159,7 @@ static fl_inline void bg_handle_one_log(struct arg_hdr *log_args, size_t size)
         static int file_id = 0;
         char new_log_filename[256] = {0};
         char new_log_filename_old[256] = {0};
-        
+
         snprintf(new_log_filename, 256, "%s.%d", logdata_file_default, file_id);
         snprintf(new_log_filename_old, 256, "%s.%d.old", logdata_file_default, file_id);
 
@@ -166,15 +167,15 @@ static fl_inline void bg_handle_one_log(struct arg_hdr *log_args, size_t size)
         if(file_id > max_nr_logfile) {
             file_id = 0;
         }
-        
+
         //日志数据文件映射
-        mmap_new_fastlog_file(&logdata_mmap, 
-                            new_log_filename, 
-                            new_log_filename_old, 
-                            log_file_size, 
-                            FATSLOG_LOG_HEADER_MAGIC_NUMBER, 
-                            program_cycles_per_sec, 
-                            program_start_rdtsc, 
+        mmap_new_fastlog_file(&logdata_mmap,
+                            new_log_filename,
+                            new_log_filename_old,
+                            log_file_size,
+                            FATSLOG_LOG_HEADER_MAGIC_NUMBER,
+                            program_cycles_per_sec,
+                            program_start_rdtsc,
                             program_unix_time_sec,
                             &program_unix_uname,
                             &logdata_mmap_curr_ptr);
@@ -186,7 +187,7 @@ static fl_inline void bg_handle_one_log(struct arg_hdr *log_args, size_t size)
     memcpy(logdata_mmap_curr_ptr, log_args, size);
     logdata_mmap_curr_ptr += size;
     file_data_number_inc(&logdata_mmap);
-    
+
 }
 
 //static void sig_handler(int signum)
@@ -222,7 +223,7 @@ static void * bg_task_routine(void *arg)
     if(bg_thread_cpu >= 0) {
         cpu_set_t mask;
         CPU_ZERO(&mask);
-     
+
         CPU_SET(bg_thread_cpu, &mask);
         if(-1 == pthread_setaffinity_np(pthread_self() ,sizeof(mask),&mask)) {
             assert(0 && "pthread_setaffinity_np error.\n");
@@ -251,7 +252,7 @@ static void * bg_task_routine(void *arg)
      *    发现使用 cgroup 会影响到其他线程，即整个进程的CPU被限制为 30%
      *
      *  -------------------------------------------------------------------
-     *  (2)使用 setrlimit 
+     *  (2)使用 setrlimit
      */
 
     /**
@@ -264,14 +265,14 @@ static void * bg_task_routine(void *arg)
          *  当使用 通知+轮询 方式(epoll+eventfd)
          */
         nfds = epoll_wait(bg_event_epoll_fd, events, 32, -1);
-        
+
         if(nfds <= 0) {
             fprintf(stderr, "epoll_wait return -> %d, error(%d): %s\n", nfds, errno, strerror(errno));
             assert(0);
         }
-        
+
         for(;nfds--;)
-            
+
 #else//_FASTLOG_USE_EVENTFD
 
         /**
@@ -284,7 +285,7 @@ static void * bg_task_routine(void *arg)
 
 #if _FASTLOG_USE_EVENTFD
             /**
-             *  
+             *
              */
             curr_event_fd = events[nfds].data.fd;
             if(unlikely(bg_new_thread_event_fd == curr_event_fd)) {
@@ -305,7 +306,7 @@ static void * bg_task_routine(void *arg)
             //eventfd read = 9
             //eventfd read = 61
             //eventfd read = 9
-            
+
 #else//_FASTLOG_USE_EVENTFD
 
             curr_buffer = threadBuffers[i];
@@ -315,10 +316,10 @@ static void * bg_task_routine(void *arg)
 #if _FASTLOG_USE_EVENTFD
 peek_buffer_again:
 #endif//_FASTLOG_USE_EVENTFD
-            
+
             /* 从 staging buffer 中获取一块内存 */
             arghdr = (struct arg_hdr*)peek_buffer(curr_buffer, &size);
-            
+
             if(!arghdr || size == 0) {
                 continue;
             }
@@ -336,7 +337,7 @@ peek_buffer_again:
 #endif//_FASTLOG_USE_EVENTFD
                 /* 确认消费 */
                 consume_done(curr_buffer, __size);
-            
+
                 char *p = (char *)arghdr;
 
                 p += __size;
@@ -352,7 +353,7 @@ peek_buffer_again:
                 goto peek_buffer_again;
             }
 #else
-            //usleep(1);       
+            //usleep(1);
 #endif//_FASTLOG_USE_EVENTFD
 
         }
@@ -369,14 +370,14 @@ static inline int __get_unused_logid()
 {
     static pthread_spinlock_t spin = 1;
     int log_id;
-    
+
     pthread_spin_lock(&spin);
 
     log_id = fastlog_atomic64_read(&maxlogId);
     fastlog_atomic64_inc(&maxlogId);
-    
+
     pthread_spin_unlock(&spin);
-    
+
     return log_id;
 }
 
@@ -393,12 +394,12 @@ void fastlog_exit()
     if(fastlog_background_thread)
     pthread_kill(fastlog_background_thread, SIGINT);
     fastlog_background_thread=0;
-    
+
     pthread_spin_lock(&metadata_mmap_lock);
-    
+
     unmmap_fastlog_logfile(&metadata_mmap);
     unmmap_fastlog_logfile(&logdata_mmap);
-    
+
     pthread_spin_unlock(&metadata_mmap_lock);
 
     ___exit = true;
@@ -407,9 +408,9 @@ void fastlog_exit()
 /**
  *  映射文件
  */
-static void mmap_new_fastlog_file(struct fastlog_file_mmap *mmap_file, 
-                char *filename, 
-                char *backupfilename, 
+static void mmap_new_fastlog_file(struct fastlog_file_mmap *mmap_file,
+                char *filename,
+                char *backupfilename,
                 size_t size,
                 int magic,
                 uint64_t cycles_per_sec,
@@ -421,14 +422,14 @@ static void mmap_new_fastlog_file(struct fastlog_file_mmap *mmap_file,
     int _unused ret = -1;
     //元数据文件映射
     ret = mmap_fastlog_logfile_write(mmap_file,
-                                     filename, 
-                                     backupfilename, 
+                                     filename,
+                                     backupfilename,
                                      size);
-    
+
     memset(mmap_file->mmapaddr, 0x00, mmap_file->mmap_size);
     *mmap_curr_ptr = mmap_file->mmapaddr;
 
-    struct fastlog_file_header *file_hdr = 
+    struct fastlog_file_header *file_hdr =
                 (struct fastlog_file_header *)(*mmap_curr_ptr);
 
     file_hdr->endian = htonl(FASTLOG_LOG_FILE_ENDIAN_MAGIC);
@@ -438,12 +439,12 @@ static void mmap_new_fastlog_file(struct fastlog_file_mmap *mmap_file,
     file_hdr->start_rdtsc = rdtsc;
     file_hdr->unix_time_sec = time_from_19700101;
     memcpy(&file_hdr->unix_uname, unix_uname, sizeof(struct utsname));
-    
+
     file_hdr->data_num = 0;
-    
+
     *mmap_curr_ptr += sizeof(struct fastlog_file_header);
     msync(mmap_file->mmapaddr, sizeof(struct fastlog_file_header), MS_ASYNC);
-    
+
 }
 
 
@@ -460,12 +461,12 @@ enum FASTLOG_LEVEL fastlog_getlevel()
 static int __bg_new_event_add_to_epoll()
 {
     int ret = -1;
-    
+
     struct epoll_event event;
-    
+
     int evt_fd = eventfd(0, EFD_CLOEXEC);
     assert(evt_fd != -1 && "eventfd(EFD_CLOEXEC) failed.");
-    
+
     event.data.fd = evt_fd;
     event.events = EPOLLIN; //必须采用水平触发
     ret = epoll_ctl(bg_event_epoll_fd, EPOLL_CTL_ADD, event.data.fd, &event);
@@ -486,8 +487,8 @@ static void __bg_init_event_epoll()
 
     bg_new_thread_event_fd = __bg_new_event_add_to_epoll();
     //printf("bg_new_thread_event_fd = %d\n", bg_new_thread_event_fd);
-    
-#endif    
+
+#endif
 }
 
 int __bg_add_buffer_event_to_epoll()
@@ -500,18 +501,18 @@ int __bg_add_buffer_event_to_epoll()
     }
     stagingBuffer_event_fd = __bg_new_event_add_to_epoll();
     //printf("stagingBuffer_event_fd = %d\n", stagingBuffer_event_fd);
-    
+
     evt_fd_to_buffer[stagingBuffer_event_fd] = stagingBuffer;
 
     eventfd_write(bg_new_thread_event_fd, 1);
-    
-#endif    
+
+#endif
 
     return 0;
 }
 
 
-//__attribute__((constructor(105))) 
+//__attribute__((constructor(105)))
 void fastlog_init(enum FASTLOG_LEVEL level, char *fmeta, char *flog, size_t nr_logfile, size_t logfile_size, int cpu)
 {
     int _unused ret = -1;
@@ -527,7 +528,7 @@ void fastlog_init(enum FASTLOG_LEVEL level, char *fmeta, char *flog, size_t nr_l
     }
 
     fastlog_setlevel(level);
-    
+
     /* 日志大小 */
     if(nr_logfile)
         max_nr_logfile = nr_logfile;
@@ -553,32 +554,32 @@ void fastlog_init(enum FASTLOG_LEVEL level, char *fmeta, char *flog, size_t nr_l
     snprintf(__tmp_file, sizeof(__tmp_file), "%s.old", metadata_file_default);
 
     //元数据文件映射
-    mmap_new_fastlog_file(&metadata_mmap, 
-                          metadata_file_default, 
-                          __tmp_file, 
-                          FATSLOG_METADATA_FILE_SIZE_DEFAULT, 
-                          FATSLOG_METADATA_HEADER_MAGIC_NUMBER, 
-                          program_cycles_per_sec, 
-                          program_start_rdtsc, 
+    mmap_new_fastlog_file(&metadata_mmap,
+                          metadata_file_default,
+                          __tmp_file,
+                          FATSLOG_METADATA_FILE_SIZE_DEFAULT,
+                          FATSLOG_METADATA_HEADER_MAGIC_NUMBER,
+                          program_cycles_per_sec,
+                          program_start_rdtsc,
                           program_unix_time_sec,
                           &program_unix_uname,
                           &metadata_mmap_curr_ptr);
 
-    
+
     //日志数据文件映射
     memset(__tmp_file, 0, sizeof(__tmp_file));
     snprintf(__tmp_file, sizeof(__tmp_file), "%s.old", logdata_file_default);
-    mmap_new_fastlog_file(&logdata_mmap, 
-                          logdata_file_default, 
-                          __tmp_file, 
-                          log_file_size, 
-                          FATSLOG_LOG_HEADER_MAGIC_NUMBER, 
-                          program_cycles_per_sec, 
-                          program_start_rdtsc, 
+    mmap_new_fastlog_file(&logdata_mmap,
+                          logdata_file_default,
+                          __tmp_file,
+                          log_file_size,
+                          FATSLOG_LOG_HEADER_MAGIC_NUMBER,
+                          program_cycles_per_sec,
+                          program_start_rdtsc,
                           program_unix_time_sec,
                           &program_unix_uname,
                           &logdata_mmap_curr_ptr);
-    
+
 
     fastlog_atomic64_init(&stagingBufferId);
     fastlog_atomic64_init(&maxlogId);
@@ -611,13 +612,13 @@ int parse_fastlog_logdata(fastlog_logdata_t *logdata, int *log_id, int *args_siz
 }
 
 int parse_fastlog_metadata(struct fastlog_metadata *metadata,
-                int *log_id, int *level, char **name, 
+                int *log_id, int *level, char **name,
                 char **file, char **func, int *line, char **format, char **thread_name)
 {
     int curr_metadata_len = metadata->metadata_size;
-    
+
     char *string_buf = metadata->string_buf;
-    
+
     *log_id = metadata->log_id;
     *level = metadata->log_level;
     *line = metadata->log_line;
@@ -627,19 +628,19 @@ int parse_fastlog_metadata(struct fastlog_metadata *metadata,
 
     *file = string_buf;
     string_buf += metadata->src_filename_len;
-    
+
     *func = string_buf;
     string_buf += metadata->src_function_len;
-    
+
     *format = string_buf;
     string_buf += metadata->print_format_len;
 //    string_buf[0] = '\0';
-    
+
     *thread_name = string_buf;
     string_buf += metadata->thread_name_len;
 
-    
-    
+
+
     return curr_metadata_len;
 }
 
@@ -648,7 +649,7 @@ static void save_fastlog_metadata(int log_id, int level, const char *name, const
 {
     int ret = -1;
     char thread_name[32];
-    
+
     ret = pthread_getname_np(pthread_self(), thread_name, 32);
     if (ret != 0) {
         strncpy(thread_name, "unknown", 32);
@@ -656,11 +657,11 @@ static void save_fastlog_metadata(int log_id, int level, const char *name, const
 
     //不要路径
     const char *base_file = basename((char*)file);
-    
+
     pthread_spin_lock(&metadata_mmap_lock);
 
     file_data_number_inc(&metadata_mmap);
-    
+
     //    printf("log_id = %d\n", log_id);
     struct fastlog_metadata *metadata = (struct fastlog_metadata *)metadata_mmap_curr_ptr;
 
@@ -675,10 +676,10 @@ static void save_fastlog_metadata(int log_id, int level, const char *name, const
     metadata->thread_name_len = strlen(thread_name) + 1;
 
 
-    metadata->metadata_size = sizeof(struct fastlog_metadata) 
-                                + metadata->user_string_len 
-                                + metadata->src_filename_len 
-                                + metadata->src_function_len 
+    metadata->metadata_size = sizeof(struct fastlog_metadata)
+                                + metadata->user_string_len
+                                + metadata->src_filename_len
+                                + metadata->src_function_len
                                 + metadata->print_format_len
                                 + metadata->thread_name_len;
 
@@ -694,12 +695,12 @@ static void save_fastlog_metadata(int log_id, int level, const char *name, const
     string_buf += metadata->print_format_len;
     memcpy(string_buf, thread_name, metadata->thread_name_len);
     string_buf += metadata->thread_name_len;
-    
+
 
     metadata_mmap_curr_ptr += metadata->metadata_size;
 
     pthread_spin_unlock(&metadata_mmap_lock);
-            
+
 }
 
 
@@ -711,8 +712,8 @@ int __fastlog_get_unused_logid(int level, const char *name, const char *file, co
     int log_id = __get_unused_logid();
 
     save_fastlog_metadata(log_id, level, name, file, func, line, format);
-    
-    return log_id; 
+
+    return log_id;
 }
 
 

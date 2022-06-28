@@ -1062,7 +1062,7 @@ int main()
     int i;
     struct test_sruct test_data[test_number];
     struct test_sruct *test;
-    
+
     for(i=0; i<test_number; i++) {
         test_data[i].value = i+1;
     }
@@ -1082,7 +1082,7 @@ int main()
     for(test = rt_rbtree_first(&tree_root); test; test = rt_rbtree_next(&tree_root, test)) {
         printf("value = %d\n", test->value);
     }
-    
+
     rt_rbtree_iter(&tree_root, rt_rbtree_first(&tree_root), _iter_cb, NULL);
 
     rt_rbtree_destroy(&tree_root, NULL, NULL);

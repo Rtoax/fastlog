@@ -7,9 +7,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
- 
+
 #include "progress.h"
- 
+
 /**
  * initialize the progress bar.
  * @max = 0
@@ -23,14 +23,14 @@ extern void progress_init(
 {
     char __title[256] = {0};
     snprintf(__title, 256, "%-20s", title);
-    
+
     bar->chr = '#';
     bar->title = strdup(__title);
     bar->style = style;
     bar->max = max;
     bar->offset = 100 / (float)max;
     bar->pro = (char *) malloc(max+1);
-    
+
     if ( style == PROGRESS_BGC_STYLE )
         memset(bar->pro, 0x00, max+1);
     else {
@@ -38,11 +38,11 @@ extern void progress_init(
         memset(bar->pro+max, 0x00, 1);
     }
 }
- 
+
 extern void progress_show( progress_t *bar, float bit )
 {
     int val = (int)(bit * bar->max);
-    switch ( bar->style ) 
+    switch ( bar->style )
     {
     case PROGRESS_NUM_STYLE:
         printf("\033[?25l\033[31m\033[1m%s%d%%\033[?25h\033[0m\r",
@@ -51,13 +51,13 @@ extern void progress_show( progress_t *bar, float bit )
         break;
     case PROGRESS_CHR_STYLE:
         memset(bar->pro, '#', val);
-        printf("\033[?25l\033[1m\033[1m%s[%-s] %d%%\033[?25h\033[0m\r", 
+        printf("\033[?25l\033[1m\033[1m%s[%-s] %d%%\033[?25h\033[0m\r",
             bar->title, bar->pro, (int)(bar->offset * val));
         fflush(stdout);
         break;
     case PROGRESS_BGC_STYLE:
         memset(bar->pro, 32, val);
-        printf("\033[?25l\033[31m\033[1m%s\033[41m %d%% %s\033[?25h\033[0m\r", 
+        printf("\033[?25l\033[31m\033[1m%s\033[41m %d%% %s\033[?25h\033[0m\r",
             bar->title, (int)(bar->offset * val), bar->pro);
         fflush(stdout);
         break;
@@ -67,7 +67,7 @@ extern void progress_show( progress_t *bar, float bit )
 extern void progress_reset(progress_t *bar, char *title)
 {
     free(bar->title);
-    
+
     char __title[256] = {0};
     snprintf(__title, 256, "%-20s", title);
     bar->title = strdup(__title);

@@ -41,10 +41,10 @@ int __fastlog_parse_format(const char *fmt, struct args_type *args)
         fprintf(stderr, "FastLog Just support %d parameters at most.\n", _FASTLOG_MAX_NR_ARGS);
         assert(0);
     }
-    
+
 //    printf("args->nargs = %d, fmt = %s, %d\n", args->nargs, fmt, __argtype[0]);
     for(iarg=0; iarg<args->nargs; iarg++) {
-        
+
         switch(__argtype[iarg]) {
 
 #define _CASE(i, v_from, v_to, operation)       \
@@ -52,7 +52,7 @@ int __fastlog_parse_format(const char *fmt, struct args_type *args)
             args->argtype[i] = v_to;            \
             args->pre_size += SIZEOF_FAT(v_to); \
             operation;                          \
-            break;  
+            break;
 
         _CASE(iarg, PA_INT, FAT_INT,);
         _CASE(iarg, PA_INT|PA_FLAG_LONG, FAT_LONG_INT,);
@@ -66,7 +66,7 @@ int __fastlog_parse_format(const char *fmt, struct args_type *args)
         _CASE(iarg, PA_FLOAT, FAT_FLOAT,);
         _CASE(iarg, PA_DOUBLE, FAT_DOUBLE,);
         _CASE(iarg, PA_DOUBLE|PA_FLAG_LONG_DOUBLE, FAT_LONG_DOUBLE,);
-        
+
 #undef _CASE
 
         default:
@@ -75,9 +75,9 @@ int __fastlog_parse_format(const char *fmt, struct args_type *args)
             break;
         }
 
-        
+
     }
-    
+
     return args->nargs;
 }
 
@@ -85,16 +85,16 @@ int __fastlog_parse_format(const char *fmt, struct args_type *args)
 
 
 /* 通过 */
-fl_inline int 
+fl_inline int
 __fastlog_print_buffer(int log_id, struct args_type *args, ...)
 {
     int iarg;
     int len;
-    
+
     va_list va, va2;
     va_start(va, args);
     va_start(va2, args);
-    
+
     struct arg_hdr *arghdr = NULL;
     char *args_data = NULL;
     unsigned int args_data_bytes = args->pre_size;
@@ -102,7 +102,7 @@ __fastlog_print_buffer(int log_id, struct args_type *args, ...)
     //如果有字符串，需要求取字符串长度
     if(unlikely(args->has_string == 1)) {
 //        printf("args->has_string = %d, pre_size = %d\n", args->has_string, args->pre_size);
-        
+
         for(iarg=0; iarg<args->nargs; iarg++) {
             switch(args->argtype[iarg]) {
 
@@ -124,12 +124,12 @@ __fastlog_print_buffer(int log_id, struct args_type *args, ...)
             _CASE(FAT_INT16, int);
             _CASE(FAT_INT32, int32_t);
             _CASE(FAT_INT64, int64_t);
-            
+
             _CASE(FAT_UINT8, unsigned int);
             _CASE(FAT_UINT16, unsigned int);
             _CASE(FAT_UINT32, uint32_t);
             _CASE(FAT_UINT64, uint64_t);
-      
+
             _CASE(FAT_INT, int);
             _CASE(FAT_SHORT, int);
             _CASE(FAT_SHORT_INT, int);
@@ -141,15 +141,15 @@ __fastlog_print_buffer(int log_id, struct args_type *args, ...)
 
             _CASE(FAT_CHAR, int);
             _CASE(FAT_UCHAR, unsigned int);
-            
+
             _CASE_STRING(FAT_STRING, char *);
 
             _CASE(FAT_POINTER, void*);
-            
+
             _CASE(FAT_FLOAT, double);
             _CASE(FAT_DOUBLE, double);
             _CASE(FAT_LONG_DOUBLE, long double);
-            
+
             default:
                 printf("\t%d unknown(%d).\n", iarg, args->argtype[iarg]);
                 assert(0 && "Not support type." && __FILE__ && __LINE__);
@@ -159,7 +159,7 @@ __fastlog_print_buffer(int log_id, struct args_type *args, ...)
             }
         }
     }
-    
+
 
 try_reserve_again:
     /**
@@ -171,7 +171,7 @@ try_reserve_again:
         goto try_reserve_again;
     }
     args_data = arghdr->log_args_buff;
-    
+
     arghdr->log_id = log_id;
 
     for(iarg=0; iarg<args->nargs; iarg++) {
@@ -208,12 +208,12 @@ try_reserve_again:
         _CASE(FAT_INT16, int);
         _CASE(FAT_INT32, int32_t);
         _CASE(FAT_INT64, int64_t);
-        
+
         _CASE(FAT_UINT8, unsigned int);
         _CASE(FAT_UINT16, unsigned int);
         _CASE(FAT_UINT32, uint32_t);
         _CASE(FAT_UINT64, uint64_t);
-        
+
         _CASE(FAT_INT, int);
         _CASE(FAT_SHORT, int);
         _CASE(FAT_SHORT_INT, int);
@@ -225,15 +225,15 @@ try_reserve_again:
 
         _CASE(FAT_CHAR, int);
         _CASE(FAT_UCHAR, unsigned int);
-        
+
         _CASE_STRING(FAT_STRING, char *);
 
         _CASE_POINTER(FAT_POINTER, void*);
-        
+
         _CASE(FAT_FLOAT, double);
         _CASE(FAT_DOUBLE, double);
         _CASE(FAT_LONG_DOUBLE, long double);
-        
+
         default:
             printf("\t%d unknown(%d).\n", iarg, args->argtype[iarg]);
             assert(0 && "Not support type." && __FILE__ && __LINE__);
@@ -242,7 +242,7 @@ try_reserve_again:
 #undef _CASE_STRING
 #undef _CASE_POINTER
         }
-    
+
     }
 
     va_end(va);
@@ -267,7 +267,7 @@ try_reserve_again:
 
 
 
-static int mmap_fastlog_logfile(struct fastlog_file_mmap *mmap_file, char *filename, char *backupfilename, size_t size, 
+static int mmap_fastlog_logfile(struct fastlog_file_mmap *mmap_file, char *filename, char *backupfilename, size_t size,
                         int open_flags, int mmap_prot, int mmap_flags)
 {
     assert(mmap_file && filename && "NULL pointer error");
@@ -335,7 +335,7 @@ static int mmap_fastlog_logfile(struct fastlog_file_mmap *mmap_file, char *filen
     if(O_RDONLY != open_flags) {
         memset(mmap_file->mmapaddr, 0, size);
     }
-    
+
     mmap_file->status = FILE_MMAP_MMAPED;
 
     return 0;
@@ -344,7 +344,7 @@ static int mmap_fastlog_logfile(struct fastlog_file_mmap *mmap_file, char *filen
 /* 映射元数据文件-读写 */
 int mmap_fastlog_logfile_write(struct fastlog_file_mmap *mmap_file, char *filename, char *backupfilename, size_t size)
 {
-    return mmap_fastlog_logfile(mmap_file, filename, backupfilename, size, 
+    return mmap_fastlog_logfile(mmap_file, filename, backupfilename, size,
                             O_RDWR|O_CREAT|O_TRUNC, PROT_WRITE|PROT_READ, MAP_SHARED);
 }
 void msync_fastlog_logfile_write(struct fastlog_file_mmap *mmap_file)
@@ -355,7 +355,7 @@ void msync_fastlog_logfile_write(struct fastlog_file_mmap *mmap_file)
 /* 映射元数据文件-只读 */
 int mmap_fastlog_logfile_read(struct fastlog_file_mmap *mmap_file, char *filename)
 {
-    return mmap_fastlog_logfile(mmap_file, filename, NULL, 0, 
+    return mmap_fastlog_logfile(mmap_file, filename, NULL, 0,
                             O_RDONLY, PROT_READ, MAP_SHARED);
 }
 
@@ -372,11 +372,11 @@ int unmmap_fastlog_logfile(struct fastlog_file_mmap *mmap_file)
     if(ret != 0) {
         printf("munmap %s failed.\n", mmap_file->filepath);
     }
-    
+
     mmap_file->status = FILE_MMAP_NULL;
-    
+
     free(mmap_file->filepath);
-    
+
     close(mmap_file->fd);
 
     return 0;

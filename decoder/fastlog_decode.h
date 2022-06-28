@@ -57,7 +57,7 @@ typedef enum {
      */
     LOG__RANGE_FILTER_MASK  = LOG__RANGE_NAME|LOG__RANGE_FUNC|LOG__RANGE_THREAD|LOG__RANGE_CONTENT
 }LOG__RANGE_TYPE;
-    
+
 typedef enum {
     LOG__RANGE_NAME_ENUM,
     LOG__RANGE_FUNC_ENUM,
@@ -97,17 +97,18 @@ typedef enum {
 /* 解析出的元数据 */
 struct metadata_decode {
     /**
-     * `log_id`红黑树节点的索引，见下面函数说明:
+     *
+ `log_id`红黑树节点的索引，见下面函数说明:
      *
      *  metadata_rbtree__cmp:       对比红黑树节点回调函数，内部对比 log_id
      *  metadata_rbtree__search:    查找红黑树节点，传入 log_id(强转，所以log_id必须在此结构起始处)
      */
     unsigned int log_id;
-    
+
     struct fastlog_metadata *metadata;  /* 指向内存映射中的数据 */
-    
+
     struct args_type argsType;      /* 由 format 字符串解析 */
-    
+
     rb_node(struct metadata_decode) rb_link_node;   /* 红黑树节点 */
 
     /**
@@ -126,7 +127,7 @@ struct metadata_decode {
      *
      *  如`metadata->string_buf`在内存中 为 TEST\0test.c\0main\0Hello, %s\0task1\0
      *  解析为：
-     *  
+     *
      *  user_string     = "TEST"
      *  src_filename    = "test.c"
      *  src_function    = "main"
@@ -135,16 +136,16 @@ struct metadata_decode {
      *
      *  而字符串长度由`metadata->xxxx_len`决定
      */
-    char* user_string; 
-    char* src_filename; 
-    char* src_function; 
+    char* user_string;
+    char* src_filename;
+    char* src_function;
     char* print_format;
     char* thread_name;
 };
 
 /**
  *  用于查找 的红黑树节点
- *  
+ *
  */
 struct log_search {
 
@@ -161,7 +162,7 @@ struct log_search {
 
     LOG__RANGE_FILTER_ENUM string_type;
 
-    
+
     unsigned long log_cnt;
 
     /**
@@ -169,18 +170,18 @@ struct log_search {
      *  对应链表节点在`struct logdata_decode`的`list_search`字段
      */
     struct list log_list_head;
-    
+
     rb_node(struct log_search) rb_link;
 };
 
 
 /* 解析出的日志数据 */
 struct logdata_decode {
-    
+
     fastlog_logdata_t *logdata;         //malloc(), 而不是文件映射中的内存, 因为可能将映射的文件 munmap
-    
+
     struct metadata_decode *metadata;   //所对应的源数据
-    
+
     rb_node(struct logdata_decode) rb_link_node_rdtsc;   //按时间顺序排序的红黑树
 
     /**
@@ -210,7 +211,7 @@ struct output_filter;
  *  输出操作符
  *
  *  open 初始化
- *  
+ *
  */
 struct output_operations {
 
@@ -225,7 +226,7 @@ struct output_operations {
 /**
  *  过滤器-类型
  *
- *  
+ *
  */
 typedef enum {
     LOG__FILTER_MATCH_TOTAL = 1,    //完全匹配
@@ -254,9 +255,9 @@ static const struct output_filter_arg output_filter_arg_null = {{NULL}, NULL};
  *  过滤器
  */
 struct output_filter {
-    
+
     LOG__RANGE_TYPE log_range;
-    
+
     LOG__FILTER_TYPE filter_type;
 
     union {
@@ -276,7 +277,7 @@ struct output_filter {
  */
 struct output_struct {
     const bool enable;
-    
+
     LOG_OUTPUT_TYPE file;
     char *filename;
     union {
@@ -335,11 +336,11 @@ extern progress_t pro_bar;
 
 /**
  *  fastlog decoder 进程 配置参数， 有默认值，同时支持 getopt 命令行配置
- *  
+ *
  */
 struct fastlog_decoder_config {
     char *decoder_version;
-    
+
     /* 是否输出详细的日志信息 */
     bool log_verbose_flag;
 
@@ -349,17 +350,17 @@ struct fastlog_decoder_config {
     /*  */
     char *metadata_file;
 
-    
+
 #define MAX_NUM_LOGDATA_FILES   10
     int nr_log_files;
     char *logdata_file;
 #define LOGDATA_FILE_SEPERATOR  ','
     char *other_log_data_files[MAX_NUM_LOGDATA_FILES-1];
-    
+
     bool has_cli;
 
     int default_log_level;
-    
+
     int output_type;
 #define DEFAULT_OUTPUT_FILE "fastlog.txt"
     bool output_filename_isset;
@@ -374,7 +375,7 @@ struct fastlog_decoder_config {
     /* 统计信息 */
     unsigned long total_fmeta_num;  /* 从元数据文件中获取的元数据个数 */
     unsigned long total_flog_num;   /* 从日志数据文件中获取的日志数据个数 */
-    
+
 };
 
 // fastlog decoder 配置参数，在 getopt 之后只读
@@ -455,14 +456,14 @@ void log_search_rbtree__destroyall(void (*cb)(struct log_search *node, void *arg
 void log_search_rbtree__insert(LOG__RANGE_FILTER_ENUM type, struct log_search *new_node);
 void log_search_rbtree__remove(LOG__RANGE_FILTER_ENUM type, struct log_search *new_node);
 struct log_search *log_search_rbtree__search(LOG__RANGE_FILTER_ENUM type, char *string);
-struct log_search * log_search_rbtree__search2(LOG__RANGE_FILTER_ENUM type, char *string);  
+struct log_search * log_search_rbtree__search2(LOG__RANGE_FILTER_ENUM type, char *string);
 struct log_search *log_search_rbtree__search_or_create(LOG__RANGE_FILTER_ENUM type, char *string);
 void log_search_rbtree__iter(LOG__RANGE_FILTER_ENUM type, void (*cb)(struct log_search *meta, void *arg), void *arg);
 
 
 
 /**
- *  级别链表操作 
+ *  级别链表操作
  *
  *  链表操作不涉及内存分配与释放，`logdata_decode`的`malloc`和`free`在红黑树操作中进行
  */
@@ -472,7 +473,7 @@ void level_list__remove(enum FASTLOG_LEVEL level, struct logdata_decode *logdata
 void level_list__iter(enum FASTLOG_LEVEL level, void (*cb)(struct logdata_decode *logdata, void *arg), void *arg);
 
 /**
- *  log_id 的bitmask 
+ *  log_id 的bitmask
  *
  *  用户统计 log_id 信息
  */

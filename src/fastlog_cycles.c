@@ -8,7 +8,7 @@
 static uint64_t __cycles_per_sec = 0;
 
 
-void __fastlog_cycles_init() 
+void __fastlog_cycles_init()
 {
     if (__cycles_per_sec != 0)
         return;
@@ -51,7 +51,7 @@ void __fastlog_cycles_init()
 //    printf("ret __cycles_per_sec = %ld\n", __cycles_per_sec);
 }
 
-uint64_t 
+uint64_t
 __fastlog_get_cycles_per_sec()
 {
     return __cycles_per_sec;

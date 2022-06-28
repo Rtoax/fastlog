@@ -10,9 +10,9 @@
 #endif
 
 
-void 
+void
 __fastlog_cycles_init();
-uint64_t 
+uint64_t
 __fastlog_get_cycles_per_sec();
 double
 __fastlog_cycles_to_seconds(int64_t cycles, double cyclesPerSec);
