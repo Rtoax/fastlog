@@ -8,7 +8,7 @@
  */
 
 #ifdef FASTLOG_HAVE_JSON
-#include <json/json.h>
+#include <json-c/json.h>
 #endif
 
 
